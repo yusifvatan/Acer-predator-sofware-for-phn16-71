@@ -4,6 +4,11 @@ import tkinter as tk
 import subprocess
 import customtkinter
 from PIL import ImageTk, Image  
+import psutil 
+import webbrowser
+import time
+import sys
+
 
 
 
@@ -13,7 +18,7 @@ customtkinter.set_default_color_theme("blue")
 
 
 root = tk.Tk()
-root.geometry("500x700")
+root.geometry("500x900")
 root.config(background="#c0c0c0")
 root.title("Acer predator sense for PHN16-71")
 
@@ -35,11 +40,11 @@ def func0():
 
 
 btn = tk.Button(root , text="Set charging limit to 80%" , command = func,
-                                  font=("",25 ))
+                                  font=("",20 ))
 btn.pack(side="top")
 
 btn = tk.Button(root , text="Disable charging limit" , command = func0,
-                                  font=("",25 ))
+                                  font=("",20 ))
 btn.pack(side="top")
 
 
@@ -190,5 +195,178 @@ btnscreen165.place(x=314 , y = 500)
 
 
 
+
+
+#battery
+
+
+def convertTime(seconds): 
+    minutes, seconds = divmod(seconds, 60) 
+    hours, minutes = divmod(minutes, 60) 
+    return "%d:%02d:%02d" % (hours, minutes, seconds) 
+  
+
+battery = psutil.sensors_battery() 
+  
+
+print("Battery percentage : ", battery.percent) 
+print("Power plugged in : ", battery.power_plugged) 
+
+battery_plugged = battery.power_plugged
+
+
+print("Battery left : ", convertTime(battery.secsleft)) 
+
+
+
+#set screen refresh rate if laptop is plug in or not
+"""
+
+def battery_plug_check():
+    if battery_plugged==False:
+        subprocess.run('xrandr --output eDP-1-1 --mode 1920x1200 --rate 60.00', shell=True)
+    elif battery_plugged==True:
+         subprocess.run('xrandr --output eDP-1-1 --mode 1920x1200 --rate 165.00', shell=True)
+
+"""
+
+
+
+
+
+
+###
+
+battery_life = customtkinter.CTkLabel(root , text='Battery information '  , text_color="#000000", font=('Helvetic',34 , "bold"))
+battery_life.place(x=60,y=550)
+
+
+#battery sensor
+battery1 = int(battery.percent)
+battery1 = str(battery1)
+battery_sensor = customtkinter.CTkLabel(root , text= battery1 + "%" , text_color="#000000", font=('Helvetic',25 , "bold"))
+battery_sensor.place(x=420,y=25)
+
+#Update battery information
+
+
+def updatebatteryinfo():
+     
+    subprocess.run('cd /home/yusifvatan/projects', shell=True)
+    battteryyyy0 = subprocess.run('python3 project2.py', shell=True)
+    
+    
+    
+    
+    
+
+btnrefreshbattery = tk.Button(root , text="Refresh battery informations", command=updatebatteryinfo ,
+                                  font=("",13 ))
+btnrefreshbattery.place(x=100 , y=600)
+
+
+
+
+#battery informations
+
+'''logo'''
+battery_logo = ImageTk.PhotoImage(Image.open("battery_percente0.png"))
+labell_battery= Label(image=battery_logo)
+
+#battery percente at below
+
+labell_battery.place(x=13 , y=645)
+
+battery_sensor = customtkinter.CTkLabel(root , text= battery1 + "%" , text_color="#000000", font=('Helvetic',25 , "bold"))
+battery_sensor.place(x=60,y=651)
+
+#check laptop is plug in or not
+
+if battery_plugged==True:
+    battery_plugged_check="Laptop is plug in"
+else:
+    battery_plugged_check="Laptop is not plug in"
+    
+battery_sensor = customtkinter.CTkLabel(root , text= battery_plugged_check, text_color="#000000", font=('Helvetic',22 , "bold"))
+battery_sensor.place(x=15,y=690)
+
+#check how long will laptop battery last
+
+battery_left_time=convertTime(battery.secsleft)
+
+battery_left_time_indicator = customtkinter.CTkLabel(root , text=battery_left_time + " hours left", text_color="#000000", font=('Helvetic',22 , "bold"))
+battery_left_time_indicator.place(x=15,y=725)
+
+
+
+#menu
+menubar = Menu(root)
+root.config(menu=menubar)
+
+#link of repository
+#https://github.com/yusifvatan/Acer-predator-sofware-for-phn16-71
+
+def repositorylink():
+    webbrowser.open('https://github.com/yusifvatan/Acer-predator-sofware-for-phn16-71', new=2)
+
+
+
+filemenu = Menu(menubar,tearoff=0)
+menubar.add_cascade(label="Info",menu=filemenu)
+filemenu.add_command(label="Repository link",command=repositorylink)
+
+
+
+
+
 root.mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+""" Features I want add but doesn't work at the moment
+
+Feature 1:
+If laptop is plug in change refresh rate to 165.00 Hz or to 60Hz if it is unplug
+What is problem? - I dont know but it doesnt work
+
+commmd=0
+
+
+while commmd==0:
+    if battery_plugged==False:
+        subprocess.run('xrandr --output eDP-1-1 --mode 1920x1200 --rate 60.00', shell=True)
+    elif battery_plugged==True:
+        subprocess.run('xrandr --output eDP-1-1 --mode 1920x1200 --rate 165.00', shell=True)
+
+
+
+    
+        
+
+
+"""
 
